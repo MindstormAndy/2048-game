@@ -1,5 +1,16 @@
-import pygame, sys, random
+import pygame, sys, random, os
 
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+# initialize pygame with a set screen size
 pygame.init()
 screen = pygame.display.set_mode((950,700), pygame.RESIZABLE)
 
@@ -14,22 +25,23 @@ font = pygame.font.SysFont("Arial", 30)
 clock = pygame.time.Clock()
 
 image_dict = {
-    2: pygame.image.load("images//2.png","2"),
-    4: pygame.image.load("images//4.png","4"),
-    8: pygame.image.load("images//8.png","8"),
-    16: pygame.image.load("images//16.png","16"),
-    32: pygame.image.load("images//32.png","32"),
-    64: pygame.image.load("images//64.png","64"),
-    128: pygame.image.load("images//128.png","128"),
-    256: pygame.image.load("images//256.png","256"),
-    512: pygame.image.load("images//512.png","512"),
-    1024: pygame.image.load("images//1024.png","1024"),
-    2048: pygame.image.load("images//2048.png","2048"),
-    4096: pygame.image.load("images//4096.png","4096"),
-    8192: pygame.image.load("images//8192.png","8192")
+    2: pygame.image.load(resource_path('images/2.png'),"2"),
+    4: pygame.image.load(resource_path('images/4.png'),"4"),
+    8: pygame.image.load(resource_path('images/8.png'),"8"),
+    16: pygame.image.load(resource_path('images/16.png'),"16"),
+    32: pygame.image.load(resource_path('images/32.png'),"32"),
+    64: pygame.image.load(resource_path('images/64.png'),"64"),
+    128: pygame.image.load(resource_path('images/128.png'),"128"),
+    256: pygame.image.load(resource_path('images/256.png'),"256"),
+    512: pygame.image.load(resource_path('images/512.png'),"512"),
+    1024: pygame.image.load(resource_path('images/1024.png'),"1024"),
+    2048: pygame.image.load(resource_path('images/2048.png'),"2048"),
+    4096: pygame.image.load(resource_path('images/4096.png'),"4096"),
+    8192: pygame.image.load(resource_path('images/8192.png'),"8192")
 }
 
 class Board:
+    # initializes based on input size
     def __init__(self, size):
         self.size = size
         self.grid = [[0 for i in range(self.size)] for j in range(self.size)]
@@ -37,15 +49,16 @@ class Board:
         self.gameover = False
         self.won = False
 
+        # find two different random spaces to place the starting tiles
         space1 = (random.randint(0,self.size-1), random.randint(0,self.size-1))
         space2 = (random.randint(0,self.size-1), random.randint(0,self.size-1))
-
         while space2 == space1:
             space2 = (random.randint(0,self.size-1), random.randint(0,self.size-1))
 
         self.spawn_tile(space1[0],space1[1])
         self.spawn_tile(space2[0],space2[1])
 
+    # spawns either a 2 or a 4 at the given row and column
     def spawn_tile(self, row, column):
         if random.randint(0,9) == 0:
             self.grid[row][column] = 4
